@@ -1,0 +1,12 @@
+@MACRO
+NAND(A B) = (OR (AND (NOT A) B) (AND A (NOT B)))
+
+@INIT	    # if a variable is not defined in init, but defined in tick it will default to false
+A = TRUE
+B = FALSE
+C = FALSE
+
+@TICK
+C = (OR A B)   # or_type(inx(0), inx(1))
+A = A   # inx(0)
+B = B   # inx(1)
