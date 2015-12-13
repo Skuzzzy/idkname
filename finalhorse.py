@@ -60,33 +60,50 @@ class RelationConst:
 
 def and_type(a,b):
     return lambda vals: a(vals) and b(vals)
+def nand_type(a,b):
+    return lambda vals: not(a(vals) and b(vals))
 def xor_type(a, b):
     return lambda vals: ((not a(vals)) and b(vals)) or (a(vals) and (not b(vals)))
 def or_type(a, b):
     return lambda vals: a(vals) or b(vals)
-def inx(index):
+def not_type(a):
+    return lambda vals: (not a(vals))
+def inx(index): # inx unwraps the values at a selected index given a list
     return lambda vals: vals[index]
+def ninx(index):
+    return lambda vals: not vals[index]
 
 # Full adder
 # A = 0, B = 1, Cin = 2, S, = 3, Cout = 4
-# full_adder = [pt_gen(0), pt_gen(1), pt_gen(2), xor_gen(xor_gen(0, 1), 2), or_gen(and_gen(xor_gen(0,1), 2), and_gen(0,1))]
 full_adder = [inx(0), inx(1), inx(2), xor_type(xor_type(inx(0), inx(1)), inx(2)), or_type(and_type(xor_type(inx(0),inx(1)), inx(2)), and_type(inx(0),inx(1)))]
-
 full_adder_relation = Relation(full_adder, [True, False, True, False, False, False])
 for x in xrange(1):
     full_adder_relation = full_adder_relation.next_relation()
     print(str(([x for x in full_adder_relation.vals])))
 
+d_ff = [inx(0), inx(1), nand_type(inx(3), nand_type(inx(0), nand_type(inx(1), inx(1)))), nand_type(inx(2), nand_type(inx(0), inx(1)))]
+d_ff_relation = Relation(d_ff, [True, True, False, True])
+for x in xrange(5):
+    d_ff_relation = d_ff_relation.next_relation()
+    print(str(([x for x in d_ff_relation.vals])))
+    d_ff_relation = d_ff_relation.next_relation()
+    print(str(([x for x in d_ff_relation.vals])))
+    d_ff_relation = d_ff_relation.next_relation()
+    print(str(([x for x in d_ff_relation.vals])))
+    d_ff_relation = d_ff_relation.next_relation()
+    print(str(([x for x in d_ff_relation.vals])))
+    d_ff_relation = d_ff_relation.next_relation()
+    print(str(([x for x in d_ff_relation.vals])))
+    d_ff_relation.funcs[1] = ninx(1)
+    d_ff_relation = d_ff_relation.next_relation()
+    print(str(([x for x in d_ff_relation.vals])))
+    d_ff_relation.funcs[1] = inx(1)
 # adder = [pt_gen(0), pt_gen(1), xor_gen(0,1), and_gen(0,1)]
 # half_adder = Relation(adder, [True, False, False, False])
 
 # for x in xrange(1):
     # half_adder = half_adder.next_relation()
     # print(str(([x for x in half_adder.vals])))
-
-
-
-
 
 # simple_relation = [RelationConst(True), flip_index(1), and_gen(0,1)]
 
