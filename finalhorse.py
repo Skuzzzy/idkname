@@ -44,8 +44,10 @@ def flip_index(index):
     return lambda vals: not vals[index]
 def xor_gen(index_one, index_two):
     return lambda vals: ((not vals[index_one]) and vals[index_two]) or (vals[index_one] and (not vals[index_two]))
+def pt_gen(index):
+    return lambda vals: vals[index]
 
-adder = [RelationConst(True), RelationConst(False), xor_gen(0,1), and_gen(0,1)]
+adder = [pt_gen(0), pt_gen(1), xor_gen(0,1), and_gen(0,1)]
 half_adder = Relation(adder, [True, False, False, False])
 
 for x in xrange(1):
